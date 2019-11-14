@@ -12,67 +12,41 @@
 #include <fstream>
 #include <iostream>
 
-//int LeftShift(int& x,int n);
-int LeftShift(int& x, const int& n, const int& i);
+int LeftShift(int x, const int& n);
 
 void Output(const int& x, const int& p);
 
 bool b(const int& x, const int& p);
 
-
 int main() {
-    int x;
-	printf("Enter the number:\n");
-    scanf("%d", &x);
-	
-    
-    printf("Enter the numbers of bits you want to shift:\n");
-	int n;
-	scanf("%d", &n);
-
-	if ((n < 32)&&(n>-1)) {
+    int x= 4026728449;
+	/*printf("Enter the number:\n");
+    scanf("%d", &x);*/
+   //  printf("Enter the numbers of bits you want to shift:\n");
+	int n=3;
+	//scanf("%d", &n);
+    if ((n < 32)&&(n>-1)) {
 		printf("Original number\n");
         Output(x, 31);
 		printf("\n");
 		printf("Wait....\n");
-		LeftShift(x,n,1);
 		printf("Received number\n");
-		Output(x, 31);
-	}
+		Output(LeftShift(x,n), 31);}
 	else {
-		printf("ERROR\n");
-    }
-
+		printf("ERROR\n");}
     return 0;
 }
-/*int LeftShift(int& x, int n) {
-	unsigned mask = 0x80000000,t;
-	for (int i = 1; i <= n; i++) {
-		t = mask & x;
-		x <<= 1;
-		if (t) { x | t; }
-	}
-    return x;
-}*/
 
-
-int LeftShift(int& x, const int& n,const int& i) {
-	unsigned mask = 0x80000000, t;
-	if (i <= n) {
-		t = mask & x;
-		x <<= 1;
-		if (t) { x | t; }
-		LeftShift(x,n,i+1);
-	}
-	return x;
+int LeftShift(int x, const int& n){
+	unsigned mask=(mask=x)>>(32-n); 
+	return (x<<n)|mask;
 }
 
 bool b(const int& x, const int& p) {
-	return (x>>(p+1))&1;
+	return (x>>p)&1;
 }
 
 void Output(const int& x,const int& p) {
     printf( "|%d", b(x,p));
-	if (p>-1){Output( x, p - 1);}
-    
-}
+	if (p>0){Output( x, p - 1);}
+ }
