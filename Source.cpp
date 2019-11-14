@@ -1,142 +1,142 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 using namespace std;
+const int nmax = 10;
+//Даны две матрицы разного размера.
+//Для той из матриц, в которой больше произведение ненулевых элементов, проверить наличие положительных элементов в каждой строке.
 
-//Определить в каком массиве меньше среднее арифметическое элементов, больших заданного числа. 
-//Если в двух или трёх массивах значения среднего арифметического совпадают, вывести соответствующее сообщение.
+void Matrinput(int size, int matr[][nmax],FILE* f);
 
-void Arrayinput(int n, int* &arr, FILE* fin);
+void Matroutput(int size, int matr[][nmax],FILE* f);
 
-void Arrayoutput(int n, int* arr, FILE* fout);
+int Multiplication(int size, int matr[][nmax]);
 
-float Average(int n, int* arr, int d);
+bool Check(int size,int matr[][nmax]);
+
+void Answer(FILE* f, int matr[][nmax], int size);
 
 
 int main()
-
 {
 	setlocale(LC_ALL, "rus");
 	FILE* fin;
-	FILE* fout;
-    fout = fopen("fout.txt", "a");
 	fin = fopen("fin.txt", "r");
+	FILE* fout;
+	fout = fopen("fout.txt", "a");
+
 	fprintf(fout, "Новый запуск программы\n");
-	//----------------------------------------INIZIALIZATING IDENTIFEIR-----------------------------------------------------//
-	int lengthA=0;
-	int lengthB=0;
-	int lengthC=0;
 
-	//----------------------------------------CREATING MASS--------------------------------------------------------------//
-	fscanf (fin,"%d\n",&lengthA);
-	int* arrayA = new int[4];//creating a mas
-    Arrayinput(lengthA ,arrayA,fin);
+	//--------------------------------------------------------------------------------//
 
-
-	fscanf(fin,"%d\n",&lengthB);
-	int* arrayB = new int[3];//creating a mas
-	Arrayinput(lengthB,arrayB,fin);
-
-	fscanf(fin,"%d\n",&lengthC);
-	int* arrayC = new int[lengthC];//creating a mas  
-    Arrayinput(lengthC,arrayC,fin);
-    
-	fprintf(fout,"Массив А\n");
-	Arrayoutput(lengthA, arrayA, fout);
-	fprintf(fout, "Массив B\n");
-    Arrayoutput(lengthB, arrayB, fout);
-	fprintf(fout, "Массив C\n");
-	Arrayoutput(lengthC, arrayC, fout);
-
-	int d;
-	printf("Введите число:");
-	scanf("%d", &d);
-
-	fprintf(fout, "Заданное число:%d\n", d);
 	
+	int matrA[nmax][nmax], matrB[nmax][nmax];
+	int a, b, mltpA, mltpB;//matr size
+	 
+	//----------------------------INPUTMATR-----------------------------------------------//
+	printf("Введите размерность матрицы A:");
+	scanf("%d", &a);
+	Matrinput(a,matrA,fin);
 
-	float sumA = Average(lengthA, arrayA, d); 
-	float sumB = Average(lengthB, arrayB, d);
-	float sumC = Average(lengthC, arrayC, d);
+	fprintf(fout, "Массив А\n");
+	Matroutput(a, matrA,fout);
 
-	float min = sumA;
-	if (min>sumB)
-		min = sumB;
-	else
-		min = sumC;
 
-	if ((sumA!=-1) && (sumB!=-1) && (sumC!=-1))
+
+	printf("Введите размерность матрицы B:");
+	scanf("%d", &b);
+	Matrinput(b,matrB,fin);
+
+	fprintf(fout, "Массив B\n");
+	Matroutput(b, matrB,fout);
+	//------------------------------------------------------------------------------------//
+
+	mltpA = Multiplication(a, matrA); cout << mltpA;
+	mltpB = Multiplication(b, matrB); cout << mltpB;
+
+	if (mltpA == mltpB)
 	{
-		if ((sumA == min) && (sumB == min) && (sumC == min)) fprintf(fout, "A B C");
-		else
-			if ((sumA == min) && (sumB == min) && (min != -1)) fprintf(fout, "А B");
-			else
-				if ((sumA == min) && (sumC == min) && (min != -1)) fprintf(fout, "  A C");
-				else
-					if ((sumB == min) && (sumC == min) && (min != -1)) fprintf(fout, " B  C");
-					else
-						if ((sumA == min) && (min != -1)) fprintf(fout, "  A");
-						else
-							if ((sumB == min) && (min != -1))  fprintf(fout, " B");
-							else
-								if ((sumC == min) && (min != -1)) fprintf(fout, " C");
+		fprintf(fout, "Произведения положительных элементов в массивах А и В равны\n");
+			Answer(fout, matrA, a);
+			Answer(fout, matrB, b);
+
 	}
-	else
-		fprintf(fout, "Упс?!?!\n");
+	else 
+		if (mltpA < mltpB)
+		{
+			fprintf(fout, "Произведениe положительных элементов в массиве В больше,чем в А\n");
+				Answer(fout,matrB, b);
+		}
+		else
+		{
+			fprintf(fout, "Произведениe положительных элементов в массиве A больше,чем в B\n");
+				Answer(fout,matrA, a);
+		}
 
-
-
-	fclose(fin);
 	fclose(fout);
-	delete [] arrayA;
-	delete [] arrayB;
-	delete [] arrayC;
-
+	fclose(fin);
 	return 0;
 }
+//=============================================FUNCTIONS===================================================================//
+void Matrinput(int size, int matr[][nmax],FILE* f)
+{  
 
-void Arrayinput(int n, int* &arr, FILE* fin)
-{
 
-	for (int i = 0; i < n; ++i)
+	for (int i = 0; i < size; i++)
 	{
-		fscanf(fin, "%d", &arr[i]);
-	}
+		for (int j = 0; j < size; j++)
+			fscanf(f, "%d", &(matr[i][j]));
+	
 
-	fscanf(fin, "\n");
-	return;
-
-}
-
-void Arrayoutput(int n, int* arr, FILE* fout)
-{
-
-	for (int i = 0; i < n; ++i)
-	{
-		fprintf(fout, "%d ", arr[i]);
+		fscanf(f, "\n");
+	
 
 	}
-
-	fprintf(fout, "\n");
 	return;
 }
 
-float Average(int n, int* arr, int d)
-{
-	float s = 0;
-	int k = 0;
-	for (int i = 0; i < n; i++)
+void Matroutput(int size, int matr[][nmax],FILE* f)
+{for (int i = 0; i < size; i++)
 	{
-		if (arr[i] > d)
-		{   
-			s += arr[i];
-			k++;
+		for (int j = 0; j < size; j++)
+			fprintf(f, "%d\t", matr[i][j]);
+		
+		fprintf(f, "\n");
+
+	}
+return;
+}
+
+int Multiplication(int size, int matr[][nmax])
+{int mltp=1;
+for (int i = 0; i < size; i++)
+	for (int j = 0; j < size; j++)
+		if (matr[i][j]>0)
+			mltp *= matr[i][j];
+return mltp;
+}
+
+bool Check(int x[], int size)
+{
+	int j = 0;
+	bool fl = true;
+	while ((j < size) && fl) {
+		if (x[j] < 0) {
+			fl = false;
+		}
+		else j++;
+	}
+	return fl;
+}
+
+void Answer(FILE* f, int matr[][nmax], int size)
+{
+	for (int i = 0; i < size; i++) {
+		if (Check(matr[i], size)) {
+			fprintf(f, "В строке № %d есть положительные элементы\n", i+1);
+		}
+		else {
+			fprintf(f, "В строке № %d нет положительных элементы\n", i+1);
 		}
 	}
-	if (k == 0)
-     s=-1;
-    else
-	{ 
-		s = s / k;
-	}
-  return s;
+		return;
 }
