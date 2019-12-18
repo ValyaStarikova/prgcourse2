@@ -1,0 +1,32 @@
+https://leetcode.com/problems/binary-tree-level-order-traversal/
+class Solution {
+public:
+	vector<vector<int>> levelOrder(TreeNode* root) {
+		queue<TreeNode*> q;
+        
+		vector<vector<int>> tree;
+		if(root==NULL) return tree;
+		q.push(root);
+        
+		while(!q.empty()){
+			int nodechildsCount = q.size();
+			vector<int> level;
+			while(nodechildsCount>0){ 
+				TreeNode* node = q.front();
+				level.push_back(node->val);
+				q.pop();
+				if(node->left!=NULL){
+					q.push(node->left);
+				}
+				if(node->right!=NULL){
+					q.push(node->right);
+				}
+				nodechildsCount--;
+			}
+			tree.push_back(level);
+			level.clear();
+		}
+        
+		return tree;
+	}
+};
